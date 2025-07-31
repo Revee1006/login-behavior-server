@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signup Tests</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="text-capitalize">Signup Tests</h2>
+                <p class='attribute'><strong>Start Time: </strong>2025-08-01 00:58:38</p>
+                <p class='attribute'><strong>Duration: </strong>4.60 s</p>
+                <p class='attribute'><strong>Summary: </strong>Total: 5, Pass: 0, Error: 5</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-10 col-md-10">
+                <table class='table table-hover table-responsive'>
+                    <thead>
+                        <tr>
+                            <th>__main__.SignupTests</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class='warning'>
+                            <td class="col-xs-10">test_existing_username</td>
+                            <td class="col-xs-1">
+                                <span class="label label-warning" style="display:block;width:40px;">Error</span>
+                            </td>
+                            <td class="col-xs-1">
+                                <button class="btn btn-default btn-xs">View</button>
+                            </td>
+                        </tr>
+                        <tr style="display:none;">
+                            <td class="col-xs-9" colspan="3"><p>
+[SETUP] Initializing Chrome WebDriver...
+[ERROR] Setup failed: There is no such driver by url https://chromedriver.storage.googleapis.com/LATEST_RELEASE_138.0.7204
+</p><p style="color:maroon;">ValueError: There is no such driver by url https://chromedriver.storage.googleapis.com/LATEST_RELEASE_138.0.7204</p><p style="color:maroon;">Traceback (most recent call last):
+  File "C:\Users\DELL\Ecomm\tests.py", line 31, in setUp
+    driver_path = ChromeDriverManager().install()
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\chrome.py", line 39, in install
+    driver_path = self._get_driver_path(self.driver)
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\core\manager.py", line 30, in _get_driver_path
+    file = self._download_manager.download_file(driver.get_driver_download_url())
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\drivers\chrome.py", line 40, in get_driver_download_url
+    driver_version_to_download = self.get_driver_version_to_download()
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\core\driver.py", line 51, in get_driver_version_to_download
+    self._driver_to_download_version = self._version if self._version not in (None, "latest") else self.get_latest_release_version()
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\drivers\chrome.py", line 62, in get_latest_release_version
+    resp = self._http_client.get(url=latest_release_url)
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\core\http.py", line 37, in get
+    self.validate_response(resp)
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\core\http.py", line 16, in validate_response
+    raise ValueError(f"There is no such driver by url {resp.url}")
+ValueError: There is no such driver by url https://chromedriver.storage.googleapis.com/LATEST_RELEASE_138.0.7204
+</p>
+                            </td>
+                        </tr>
+                        <tr class='warning'>
+                            <td class="col-xs-10">test_invalid_username</td>
+                            <td class="col-xs-1">
+                                <span class="label label-warning" style="display:block;width:40px;">Error</span>
+                            </td>
+                            <td class="col-xs-1">
+                                <button class="btn btn-default btn-xs">View</button>
+                            </td>
+                        </tr>
+                        <tr style="display:none;">
+                            <td class="col-xs-9" colspan="3"><p>
+[SETUP] Initializing Chrome WebDriver...
+[ERROR] Setup failed: There is no such driver by url https://chromedriver.storage.googleapis.com/LATEST_RELEASE_138.0.7204
+</p><p style="color:maroon;">ValueError: There is no such driver by url https://chromedriver.storage.googleapis.com/LATEST_RELEASE_138.0.7204</p><p style="color:maroon;">Traceback (most recent call last):
+  File "C:\Users\DELL\Ecomm\tests.py", line 31, in setUp
+    driver_path = ChromeDriverManager().install()
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\chrome.py", line 39, in install
+    driver_path = self._get_driver_path(self.driver)
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\core\manager.py", line 30, in _get_driver_path
+    file = self._download_manager.download_file(driver.get_driver_download_url())
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\drivers\chrome.py", line 40, in get_driver_download_url
+    driver_version_to_download = self.get_driver_version_to_download()
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\core\driver.py", line 51, in get_driver_version_to_download
+    self._driver_to_download_version = self._version if self._version not in (None, "latest") else self.get_latest_release_version()
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\drivers\chrome.py", line 62, in get_latest_release_version
+    resp = self._http_client.get(url=latest_release_url)
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\core\http.py", line 37, in get
+    self.validate_response(resp)
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\core\http.py", line 16, in validate_response
+    raise ValueError(f"There is no such driver by url {resp.url}")
+ValueError: There is no such driver by url https://chromedriver.storage.googleapis.com/LATEST_RELEASE_138.0.7204
+</p>
+                            </td>
+                        </tr>
+                        <tr class='warning'>
+                            <td class="col-xs-10">test_password_mismatch</td>
+                            <td class="col-xs-1">
+                                <span class="label label-warning" style="display:block;width:40px;">Error</span>
+                            </td>
+                            <td class="col-xs-1">
+                                <button class="btn btn-default btn-xs">View</button>
+                            </td>
+                        </tr>
+                        <tr style="display:none;">
+                            <td class="col-xs-9" colspan="3"><p>
+[SETUP] Initializing Chrome WebDriver...
+[ERROR] Setup failed: There is no such driver by url https://chromedriver.storage.googleapis.com/LATEST_RELEASE_138.0.7204
+</p><p style="color:maroon;">ValueError: There is no such driver by url https://chromedriver.storage.googleapis.com/LATEST_RELEASE_138.0.7204</p><p style="color:maroon;">Traceback (most recent call last):
+  File "C:\Users\DELL\Ecomm\tests.py", line 31, in setUp
+    driver_path = ChromeDriverManager().install()
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\chrome.py", line 39, in install
+    driver_path = self._get_driver_path(self.driver)
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\core\manager.py", line 30, in _get_driver_path
+    file = self._download_manager.download_file(driver.get_driver_download_url())
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\drivers\chrome.py", line 40, in get_driver_download_url
+    driver_version_to_download = self.get_driver_version_to_download()
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\core\driver.py", line 51, in get_driver_version_to_download
+    self._driver_to_download_version = self._version if self._version not in (None, "latest") else self.get_latest_release_version()
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\drivers\chrome.py", line 62, in get_latest_release_version
+    resp = self._http_client.get(url=latest_release_url)
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\core\http.py", line 37, in get
+    self.validate_response(resp)
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\core\http.py", line 16, in validate_response
+    raise ValueError(f"There is no such driver by url {resp.url}")
+ValueError: There is no such driver by url https://chromedriver.storage.googleapis.com/LATEST_RELEASE_138.0.7204
+</p>
+                            </td>
+                        </tr>
+                        <tr class='warning'>
+                            <td class="col-xs-10">test_valid_signup</td>
+                            <td class="col-xs-1">
+                                <span class="label label-warning" style="display:block;width:40px;">Error</span>
+                            </td>
+                            <td class="col-xs-1">
+                                <button class="btn btn-default btn-xs">View</button>
+                            </td>
+                        </tr>
+                        <tr style="display:none;">
+                            <td class="col-xs-9" colspan="3"><p>
+[SETUP] Initializing Chrome WebDriver...
+[ERROR] Setup failed: There is no such driver by url https://chromedriver.storage.googleapis.com/LATEST_RELEASE_138.0.7204
+</p><p style="color:maroon;">ValueError: There is no such driver by url https://chromedriver.storage.googleapis.com/LATEST_RELEASE_138.0.7204</p><p style="color:maroon;">Traceback (most recent call last):
+  File "C:\Users\DELL\Ecomm\tests.py", line 31, in setUp
+    driver_path = ChromeDriverManager().install()
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\chrome.py", line 39, in install
+    driver_path = self._get_driver_path(self.driver)
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\core\manager.py", line 30, in _get_driver_path
+    file = self._download_manager.download_file(driver.get_driver_download_url())
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\drivers\chrome.py", line 40, in get_driver_download_url
+    driver_version_to_download = self.get_driver_version_to_download()
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\core\driver.py", line 51, in get_driver_version_to_download
+    self._driver_to_download_version = self._version if self._version not in (None, "latest") else self.get_latest_release_version()
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\drivers\chrome.py", line 62, in get_latest_release_version
+    resp = self._http_client.get(url=latest_release_url)
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\core\http.py", line 37, in get
+    self.validate_response(resp)
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\core\http.py", line 16, in validate_response
+    raise ValueError(f"There is no such driver by url {resp.url}")
+ValueError: There is no such driver by url https://chromedriver.storage.googleapis.com/LATEST_RELEASE_138.0.7204
+</p>
+                            </td>
+                        </tr>
+                        <tr class='warning'>
+                            <td class="col-xs-10">test_weak_password</td>
+                            <td class="col-xs-1">
+                                <span class="label label-warning" style="display:block;width:40px;">Error</span>
+                            </td>
+                            <td class="col-xs-1">
+                                <button class="btn btn-default btn-xs">View</button>
+                            </td>
+                        </tr>
+                        <tr style="display:none;">
+                            <td class="col-xs-9" colspan="3"><p>
+[SETUP] Initializing Chrome WebDriver...
+[ERROR] Setup failed: There is no such driver by url https://chromedriver.storage.googleapis.com/LATEST_RELEASE_138.0.7204
+</p><p style="color:maroon;">ValueError: There is no such driver by url https://chromedriver.storage.googleapis.com/LATEST_RELEASE_138.0.7204</p><p style="color:maroon;">Traceback (most recent call last):
+  File "C:\Users\DELL\Ecomm\tests.py", line 31, in setUp
+    driver_path = ChromeDriverManager().install()
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\chrome.py", line 39, in install
+    driver_path = self._get_driver_path(self.driver)
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\core\manager.py", line 30, in _get_driver_path
+    file = self._download_manager.download_file(driver.get_driver_download_url())
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\drivers\chrome.py", line 40, in get_driver_download_url
+    driver_version_to_download = self.get_driver_version_to_download()
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\core\driver.py", line 51, in get_driver_version_to_download
+    self._driver_to_download_version = self._version if self._version not in (None, "latest") else self.get_latest_release_version()
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\drivers\chrome.py", line 62, in get_latest_release_version
+    resp = self._http_client.get(url=latest_release_url)
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\core\http.py", line 37, in get
+    self.validate_response(resp)
+  File "C:\Users\DELL\.virtualenvs\Ecomm-dVpyCWef\lib\site-packages\webdriver_manager\core\http.py", line 16, in validate_response
+    raise ValueError(f"There is no such driver by url {resp.url}")
+ValueError: There is no such driver by url https://chromedriver.storage.googleapis.com/LATEST_RELEASE_138.0.7204
+</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                Total: 5, Pass: 0, Error: 5 -- Duration: 4.60 s
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('td').on('click', '.btn', function(e){
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                var $this = $(this);
+                var $nextRow = $this.closest('tr').next('tr');
+                $nextRow.slideToggle("fast");
+                $this.text(function(i, text){
+                    if (text === 'View') {
+                        return 'Hide';
+                    } else {
+                        return 'View';
+                    };
+                });
+            });
+        });
+    </script>
+</body>
+</html

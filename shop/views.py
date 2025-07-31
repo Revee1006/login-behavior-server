@@ -6,6 +6,21 @@ from django.contrib.auth.decorators import login_required
 from .models import Product, Order, Wishlist
 
 
+def home(request):
+    """Home page view"""
+    # Get featured products (first 8 products)
+    featured_products = Product.objects.all()[:8]
+    
+    # Get user's wishlist items for highlighting
+    wishlist_items = []
+    if request.user.is_authenticated:
+        wishlist, created = Wishlist.objects.get_or_create(user=request.user)
+        wishlist_items = wishlist.products.all()
+    
+    return render(request, 'shop/home.html', {
+        'featured_products': featured_products,
+        'wishlist_items': wishlist_items,
+    })
 
 def product_list(request):
     query = request.GET.get('q', '')

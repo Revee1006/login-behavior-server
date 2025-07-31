@@ -1,41 +1,338 @@
 {% extends 'base.html' %}
+{% block title %}My Wishlist - TechStore{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <h1 class="mb-4">My Wishlist</h1>
-    
-    {% if wishlist.products.all %}
-        <div class="row">
-            {% for product in wishlist.products.all %}
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="card h-100 position-relative">
-                    <div class="position-absolute top-0 end-0 p-2">
-                        <form method="post" action="{% url 'remove_from_wishlist' product.id %}" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="Remove from wishlist">
-                                <i class="bi bi-heart-fill text-danger"></i>
-                            </button>
-                        </form>
+<!-- Page Header -->
+<section class="py-4 bg-white border-bottom">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="fw-bold mb-2">
+                    <i class="bi bi-heart me-2"></i>My Wishlist
+                </h1>
+                <p class="text-muted mb-0">
+                    Save your favorite products for later
+                </p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <a href="{% url 'product_list' %}" class="btn btn-outline-primary">
+                    <i class="bi bi-plus-circle me-2"></i>Add More Items
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if wishlist.products.all %}
+<!-- Wishlist Items Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="fw-bold mb-0">
+                        <i class="bi bi-heart-fill text-danger me-2"></i>
+                        Saved Items ({{ wishlist.products.all|length }})
+                    </h3>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-primary btn-sm" onclick="selectAll()">
+                            <i class="bi bi-check-all me-1"></i>Select All
+                        </button>
+                        <button class="btn btn-outline-success btn-sm" onclick="addSelectedToCart()">
+                            <i class="bi bi-cart-plus me-1"></i>Add Selected to Cart
+                        </button>
                     </div>
-                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
-                    <div class="card-body d-flex flex-column">
-                        <h6 class="card-title">{{ product.name }}</h6>
-                        <p class="card-text flex-grow-1">{{ product.description|truncatewords:15 }}</p>
-                        <p class="card-text"><strong>${{ product.price }}</strong></p>
-                        <form method="post" action="{% url 'add_to_cart' product.id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-primary btn-sm w-100">Add to Cart</button>
-                        </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            {% for product in wishlist.products.all %}
+            <div class="col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter }}">
+                <div class="card h-100 wishlist-card">
+                    <div class="position-relative">
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" 
+                             style="height: 200px; object-fit: cover;">
+                        
+                        <!-- Remove from wishlist button -->
+                        <div class="position-absolute top-0 end-0 m-2">
+                            <form method="post" action="{% url 'remove_from_wishlist' product.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-light rounded-circle shadow-sm" 
+                                        title="Remove from wishlist" style="width: 35px; height: 35px;"
+                                        onclick="return confirm('Remove this item from wishlist?')">
+                                    <i class="bi bi-heart-fill text-danger"></i>
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <!-- Price badge -->
+                        <div class="position-absolute bottom-0 start-0 w-100 p-3" 
+                             style="background: linear-gradient(transparent, rgba(0,0,0,0.7));">
+                            <span class="badge bg-primary fs-6 fw-bold">${{ product.price }}</span>
+                        </div>
+                        
+                        <!-- Stock status -->
+                        <div class="position-absolute top-0 start-0 m-2">
+                            <span class="badge bg-success">
+                                <i class="bi bi-check-circle me-1"></i>In Stock
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body d-flex flex-column p-3">
+                        <h6 class="card-title fw-bold mb-2">{{ product.name }}</h6>
+                        <p class="card-text text-muted flex-grow-1 mb-3">
+                            {{ product.description|truncatewords:12 }}
+                        </p>
+                        
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'product_detail' product.id %}" 
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-eye me-2"></i>View Details
+                            </a>
+                            <form method="post" action="{% url 'add_to_cart' product.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary btn-sm w-100">
+                                    <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
-    {% else %}
-        <div class="text-center py-5">
-            <h3>Your wishlist is empty</h3>
-            <p class="text-muted">Add some products to your wishlist to get started!</p>
-            <a href="{% url 'product_list' %}" class="btn btn-primary">Browse Products</a>
+    </div>
+</section>
+
+<!-- Quick Actions Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4">
+                            <i class="bi bi-lightning me-2"></i>Quick Actions
+                        </h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <button class="btn btn-outline-primary w-100" onclick="addAllToCart()">
+                                    <i class="bi bi-cart-plus me-2"></i>Add All to Cart
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <button class="btn btn-outline-secondary w-100" onclick="shareWishlist()">
+                                    <i class="bi bi-share me-2"></i>Share Wishlist
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    {% endif %}
-</div>
+    </div>
+</section>
+
+{% else %}
+<!-- Empty Wishlist Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center" data-aos="fade-up">
+                <div class="mb-4">
+                    <i class="bi bi-heart display-1 text-muted"></i>
+                </div>
+                <h2 class="fw-bold mb-3">Your Wishlist is Empty</h2>
+                <p class="text-muted mb-4">
+                    Start building your wishlist by adding products you love. 
+                    You can save items for later and get notified when they go on sale!
+                </p>
+                <div class="d-grid gap-3 d-md-flex justify-content-md-center">
+                    <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-grid me-2"></i>Browse Products
+                    </a>
+                    <a href="#" class="btn btn-outline-primary btn-lg">
+                        <i class="bi bi-star me-2"></i>View Recommendations
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How Wishlist Works Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h3 class="fw-bold mb-3" data-aos="fade-up">How Wishlist Works</h3>
+                <p class="text-muted lead" data-aos="fade-up" data-aos-delay="100">
+                    Save products you love and never miss out on great deals
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card border-0 bg-white shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="bi bi-heart display-4 text-primary"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Save Products</h5>
+                        <p class="text-muted">Click the heart icon on any product to add it to your wishlist.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="card border-0 bg-white shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="bi bi-bell display-4 text-primary"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Get Notifications</h5>
+                        <p class="text-muted">We'll notify you when items in your wishlist go on sale.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
+                <div class="card border-0 bg-white shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="bi bi-cart-plus display-4 text-primary"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Quick Purchase</h5>
+                        <p class="text-muted">Add items to your cart with one click when you're ready to buy.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Recommended Products Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3 class="fw-bold" data-aos="fade-up">
+                    <i class="bi bi-lightbulb me-2"></i>You Might Also Like
+                </h3>
+                <p class="text-muted" data-aos="fade-up" data-aos-delay="100">
+                    Discover more products based on your interests
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Placeholder for recommended products -->
+            <div class="col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="card h-100 product-card">
+                    <div class="position-relative">
+                        <img src="https://via.placeholder.com/300x200/2563eb/ffffff?text=Product" 
+                             class="card-img-top" alt="Recommended Product" style="height: 200px; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-3" 
+                             style="background: linear-gradient(transparent, rgba(0,0,0,0.7));">
+                            <span class="badge bg-primary fs-6 fw-bold">$199</span>
+                        </div>
+                    </div>
+                    <div class="card-body d-flex flex-column p-3">
+                        <h6 class="card-title fw-bold mb-2">Recommended Product</h6>
+                        <p class="card-text text-muted flex-grow-1 mb-3">
+                            High-quality product that matches your interests.
+                        </p>
+                        <div class="d-grid gap-2">
+                            <a href="#" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-eye me-2"></i>View Details
+                            </a>
+                            <button class="btn btn-primary btn-sm">
+                                <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.wishlist-card {
+    transition: all 0.3s ease;
+    border: none;
+    overflow: hidden;
+}
+
+.wishlist-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.wishlist-card .card-img-top {
+    transition: all 0.3s ease;
+}
+
+.wishlist-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.product-card {
+    transition: all 0.3s ease;
+    border: none;
+    overflow: hidden;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+</style>
+
+<script>
+// Wishlist functionality
+function selectAll() {
+    // Implementation for selecting all items
+    console.log('Select all items');
+}
+
+function addSelectedToCart() {
+    // Implementation for adding selected items to cart
+    console.log('Add selected items to cart');
+}
+
+function addAllToCart() {
+    // Implementation for adding all wishlist items to cart
+    console.log('Add all items to cart');
+}
+
+function shareWishlist() {
+    // Implementation for sharing wishlist
+    console.log('Share wishlist');
+    
+    // Example: Copy wishlist URL to clipboard
+    if (navigator.share) {
+        navigator.share({
+            title: 'My TechStore Wishlist',
+            text: 'Check out my wishlist on TechStore!',
+            url: window.location.href
+        });
+    } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            alert('Wishlist URL copied to clipboard!');
+        });
+    }
+}
+
+// Add animation on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Add any additional initialization here
+    console.log('Wishlist page loaded');
+});
+</script>
 {% endblock %} 

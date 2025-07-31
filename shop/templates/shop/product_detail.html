@@ -1,22 +1,393 @@
 {% extends 'base.html' %}
+{% block title %}{{ product.name }} - TechStore{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card mb-4">
-                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 350px; object-fit: contain;">
-                <div class="card-body">
-                    <h2 class="card-title">{{ product.name }}</h2>
-                    <p class="card-text">{{ product.description }}</p>
-                    <h4 class="card-text">${{ product.price }}</h4>
-                    <form method="post" action="{% url 'add_to_cart' product.id %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-primary">Add to Cart</button>
-                    </form>
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="py-3 bg-white border-bottom">
+    <div class="container">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+                <a href="{% url 'product_list' %}" class="text-decoration-none">
+                    <i class="bi bi-house me-1"></i>Products
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Product Detail Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Product Image -->
+            <div class="col-lg-6 mb-4" data-aos="fade-right">
+                <div class="product-image-container">
+                    <img src="{{ product.image.url }}" class="img-fluid rounded-3 shadow-lg" 
+                         alt="{{ product.name }}" id="mainImage">
+                    <div class="position-absolute top-0 end-0 m-3">
+                        {% if user.is_authenticated %}
+                            {% if product in wishlist_items %}
+                                <form method="post" action="{% url 'remove_from_wishlist' product.id %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-light rounded-circle shadow-sm" 
+                                            title="Remove from wishlist" style="width: 45px; height: 45px;">
+                                        <i class="bi bi-heart-fill text-danger fs-5"></i>
+                                    </button>
+                                </form>
+                            {% else %}
+                                <form method="post" action="{% url 'add_to_wishlist' product.id %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-light rounded-circle shadow-sm" 
+                                            title="Add to wishlist" style="width: 45px; height: 45px;">
+                                        <i class="bi bi-heart fs-5"></i>
+                                    </button>
+                                </form>
+                            {% endif %}
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-            <a href="{{ previous_url }}" class="btn btn-secondary">Back</a>
+
+            <!-- Product Info -->
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="product-info">
+                    <h1 class="fw-bold mb-3">{{ product.name }}</h1>
+                    
+                    <div class="mb-4">
+                        <span class="badge bg-success fs-6 me-2">
+                            <i class="bi bi-check-circle me-1"></i>In Stock
+                        </span>
+                        <span class="badge bg-primary fs-6">
+                            <i class="bi bi-star-fill me-1"></i>Premium Quality
+                        </span>
+                    </div>
+
+                    <div class="price-section mb-4">
+                        <h2 class="text-primary fw-bold display-6">${{ product.price }}</h2>
+                        <p class="text-muted mb-0">
+                            <i class="bi bi-truck me-2"></i>Free shipping on orders over $50
+                        </p>
+                    </div>
+
+                    <div class="description-section mb-4">
+                        <h5 class="fw-bold mb-3">Description</h5>
+                        <p class="text-muted lh-lg">{{ product.description }}</p>
+                    </div>
+
+                    <div class="features-section mb-4">
+                        <h5 class="fw-bold mb-3">Key Features</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                High-quality materials and construction
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Warranty included
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Fast and secure shipping
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                30-day return policy
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="action-buttons">
+                        <form method="post" action="{% url 'add_to_cart' product.id %}" class="d-grid gap-3">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                            </button>
+                        </form>
+                        
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <a href="{% url 'product_list' %}" class="btn btn-outline-secondary w-100">
+                                    <i class="bi bi-arrow-left me-2"></i>Continue Shopping
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="{% url 'cart_view' %}" class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-cart3 me-2"></i>View Cart
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Product Details Tabs -->
+<section class="py-5 bg-light">
+    <div class="container">
+    <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0">
+                        <ul class="nav nav-tabs card-header-tabs" id="productTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="specifications-tab" data-bs-toggle="tab" 
+                                        data-bs-target="#specifications" type="button" role="tab">
+                                    <i class="bi bi-list-check me-2"></i>Specifications
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" 
+                                        data-bs-target="#reviews" type="button" role="tab">
+                                    <i class="bi bi-star me-2"></i>Reviews
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="shipping-tab" data-bs-toggle="tab" 
+                                        data-bs-target="#shipping" type="button" role="tab">
+                                    <i class="bi bi-truck me-2"></i>Shipping
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                <div class="card-body">
+                        <div class="tab-content" id="productTabsContent">
+                            <div class="tab-pane fade show active" id="specifications" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5 class="fw-bold mb-3">Product Specifications</h5>
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td class="fw-bold text-muted">Brand:</td>
+                                                <td>TechStore</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Model:</td>
+                                                <td>{{ product.name }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Category:</td>
+                                                <td>Electronics</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="fw-bold text-muted">Warranty:</td>
+                                                <td>1 Year</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5 class="fw-bold mb-3">What's Included</h5>
+                                        <ul class="list-unstyled">
+                                            <li class="mb-2">
+                                                <i class="bi bi-check-circle text-success me-2"></i>
+                                                Main product
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="bi bi-check-circle text-success me-2"></i>
+                                                User manual
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="bi bi-check-circle text-success me-2"></i>
+                                                Warranty card
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="bi bi-check-circle text-success me-2"></i>
+                                                Original packaging
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="reviews" role="tabpanel">
+                                <div class="text-center py-4">
+                                    <i class="bi bi-star display-1 text-muted mb-3"></i>
+                                    <h5 class="fw-bold">Customer Reviews</h5>
+                                    <p class="text-muted">Be the first to review this product!</p>
+                                    <button class="btn btn-primary">
+                                        <i class="bi bi-pencil me-2"></i>Write a Review
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="shipping" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5 class="fw-bold mb-3">Shipping Information</h5>
+                                        <ul class="list-unstyled">
+                                            <li class="mb-3">
+                                                <i class="bi bi-truck text-primary me-2"></i>
+                                                <strong>Standard Shipping:</strong> 3-5 business days
+                                            </li>
+                                            <li class="mb-3">
+                                                <i class="bi bi-lightning text-warning me-2"></i>
+                                                <strong>Express Shipping:</strong> 1-2 business days
+                                            </li>
+                                            <li class="mb-3">
+                                                <i class="bi bi-shield-check text-success me-2"></i>
+                                                <strong>Free Shipping:</strong> On orders over $50
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5 class="fw-bold mb-3">Return Policy</h5>
+                                        <ul class="list-unstyled">
+                                            <li class="mb-2">
+                                                <i class="bi bi-arrow-return-left text-info me-2"></i>
+                                                30-day return window
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="bi bi-box-seam text-info me-2"></i>
+                                                Original packaging required
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="bi bi-credit-card text-info me-2"></i>
+                                                Full refund or exchange
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Products Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3 class="fw-bold" data-aos="fade-up">
+                    <i class="bi bi-grid-3x3-gap me-2"></i>You Might Also Like
+                </h3>
+                <p class="text-muted" data-aos="fade-up" data-aos-delay="100">
+                    Discover more amazing products from our collection
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <!-- This would be populated with related products -->
+            <div class="col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="card h-100 product-card">
+                    <div class="position-relative">
+                        <img src="https://via.placeholder.com/300x200/2563eb/ffffff?text=Product" 
+                             class="card-img-top" alt="Related Product" style="height: 200px; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-3" 
+                             style="background: linear-gradient(transparent, rgba(0,0,0,0.7));">
+                            <span class="badge bg-primary fs-6 fw-bold">$299</span>
+                        </div>
+                    </div>
+                    <div class="card-body d-flex flex-column p-3">
+                        <h6 class="card-title fw-bold mb-2">Related Product</h6>
+                        <p class="card-text text-muted flex-grow-1 mb-3">
+                            High-quality related product with amazing features.
+                        </p>
+                        <div class="d-grid">
+                            <a href="#" class="btn btn-outline-primary">
+                                <i class="bi bi-eye me-2"></i>View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
         </div>
     </div>
 </div>
+</section>
+
+<style>
+.product-image-container {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.product-image-container img {
+    transition: all 0.3s ease;
+}
+
+.product-image-container:hover img {
+    transform: scale(1.05);
+}
+
+.product-info {
+    padding: 1rem 0;
+}
+
+.price-section {
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.features-section ul li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.features-section ul li:last-child {
+    border-bottom: none;
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    color: var(--text-secondary);
+    font-weight: 500;
+    padding: 1rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--primary-color);
+    background: none;
+    border-bottom: 3px solid var(--primary-color);
+}
+
+.nav-tabs .nav-link:hover {
+    color: var(--primary-color);
+    border-color: transparent;
+}
+
+.tab-content {
+    padding: 2rem 0;
+}
+
+.table td {
+    padding: 0.75rem 0;
+    border: none;
+}
+
+@media (max-width: 768px) {
+    .product-info {
+        padding: 0;
+        margin-top: 1rem;
+    }
+    
+    .price-section {
+        padding: 1rem;
+    }
+}
+</style>
+
+<script>
+// Image zoom effect
+document.addEventListener('DOMContentLoaded', function() {
+    const mainImage = document.getElementById('mainImage');
+    
+    if (mainImage) {
+        mainImage.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.1)';
+        });
+        
+        mainImage.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+        });
+    }
+});
+</script>
 {% endblock %} 

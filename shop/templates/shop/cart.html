@@ -1,67 +1,348 @@
 {% extends 'base.html' %}
+{% load custom_filters %}
+{% block title %}Shopping Cart - TechStore{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <h1 class="mb-4">Shopping Cart</h1>
-    
-    {% if cart_items %}
-        <div class="d-flex justify-content-end mb-3">
-            <form method="post" action="{% url 'clear_cart' %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger btn-sm">Clear Cart</button>
-            </form>
+<!-- Page Header -->
+<section class="py-4 bg-white border-bottom">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="fw-bold mb-2">
+                    <i class="bi bi-cart3 me-2"></i>Shopping Cart
+                </h1>
+                <p class="text-muted mb-0">
+                    Review your items and proceed to checkout
+                </p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <a href="{% url 'product_list' %}" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left me-2"></i>Continue Shopping
+                </a>
+            </div>
         </div>
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Subtotal</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in cart_items %}
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width: 50px; height: 50px; object-fit: cover;" class="me-3">
-                                <div>
-                                    <h6 class="mb-0">{{ item.product.name }}</h6>
-                                    <small class="text-muted">{{ item.product.description|truncatewords:10 }}</small>
+    </div>
+</section>
+
+{% if cart_items %}
+<!-- Cart Items Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Cart Items -->
+            <div class="col-lg-8 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                        <h5 class="fw-bold mb-0">
+                            <i class="bi bi-bag me-2"></i>Cart Items ({{ cart_items|length }})
+                        </h5>
+                        <form method="post" action="{% url 'clear_cart' %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger btn-sm" 
+                                    onclick="return confirm('Are you sure you want to clear your cart?')">
+                                <i class="bi bi-trash me-1"></i>Clear Cart
+                            </button>
+                        </form>
+                    </div>
+                    <div class="card-body p-0">
+                        {% for item in cart_items %}
+                        <div class="cart-item p-4 border-bottom" data-aos="fade-up" data-aos-delay="{{ forloop.counter }}">
+                            <div class="row align-items-center">
+                                <div class="col-md-2 mb-3 mb-md-0">
+                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" 
+                                         class="img-fluid rounded-3" style="height: 80px; object-fit: cover;">
+                                </div>
+                                <div class="col-md-4 mb-3 mb-md-0">
+                                    <h6 class="fw-bold mb-1">{{ item.product.name }}</h6>
+                                    <p class="text-muted small mb-0">{{ item.product.description|truncatewords:10 }}</p>
+                                    <div class="mt-2">
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle me-1"></i>In Stock
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 mb-3 mb-md-0 text-center">
+                                    <div class="quantity-controls">
+                                        <span class="fw-bold text-primary">Qty: {{ item.quantity }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 mb-3 mb-md-0 text-center">
+                                    <span class="fw-bold text-primary">${{ item.product.price }}</span>
+                                </div>
+                                <div class="col-md-2 text-center">
+                                    <span class="fw-bold fs-5 text-success">${{ item.subtotal }}</span>
+                                </div>
+                                <div class="col-12 mt-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex gap-2">
+                                            <a href="{% url 'product_detail' item.product.id %}" 
+                                               class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-eye me-1"></i>View Details
+                                            </a>
+                                            <a href="{% url 'add_to_wishlist' item.product.id %}" 
+                                               class="btn btn-outline-secondary btn-sm">
+                                                <i class="bi bi-heart me-1"></i>Add to Wishlist
+                                            </a>
+                                        </div>
+                                        <a href="{% url 'remove_from_cart' item.product.id %}" 
+                                           class="btn btn-outline-danger btn-sm"
+                                           onclick="return confirm('Remove this item from cart?')">
+                                            <i class="bi bi-trash me-1"></i>Remove
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </td>
-                        <td>${{ item.product.price }}</td>
-                        <td>{{ item.quantity }}</td>
-                        <td>${{ item.subtotal }}</td>
-                        <td>
-                            <a href="{% url 'remove_from_cart' item.product.id %}" class="btn btn-danger btn-sm">Remove</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="3" class="text-end"><strong>Total:</strong></td>
-                        <td><strong>${{ total }}</strong></td>
-                        <td></td>
-                    </tr>
-                </tfoot>
-            </table>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm sticky-top" style="top: 100px;">
+                    <div class="card-header bg-primary text-white border-0">
+                        <h5 class="fw-bold mb-0">
+                            <i class="bi bi-calculator me-2"></i>Order Summary
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="summary-item d-flex justify-content-between mb-3">
+                            <span class="text-muted">Subtotal ({{ cart_items|length }} items):</span>
+                            <span class="fw-bold">${{ total }}</span>
+                        </div>
+                        <div class="summary-item d-flex justify-content-between mb-3">
+                            <span class="text-muted">Shipping:</span>
+                            <span class="text-success fw-bold">
+                                {% if total > 50 %}
+                                    <i class="bi bi-check-circle me-1"></i>FREE
+                                {% else %}
+                                    $5.99
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="summary-item d-flex justify-content-between mb-3">
+                            <span class="text-muted">Tax:</span>
+                            <span class="fw-bold">${{ total|floatformat:2 }}</span>
+                        </div>
+                        <hr>
+                        <div class="summary-item d-flex justify-content-between mb-4">
+                            <span class="fw-bold fs-5">Total:</span>
+                            <span class="fw-bold fs-5 text-primary">
+                                ${{ total|floatformat:2 }}
+                            </span>
+                        </div>
+
+                        {% if total < 50 %}
+                        <div class="alert alert-info mb-3">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Add ${{ 50|subtract:total|floatformat:2 }} more for FREE shipping!
+                        </div>
+                        {% else %}
+                        <div class="alert alert-success mb-3">
+                            <i class="bi bi-check-circle me-2"></i>
+                            You qualify for FREE shipping!
+                        </div>
+                        {% endif %}
+
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'checkout' %}" class="btn btn-primary btn-lg">
+                                <i class="bi bi-credit-card me-2"></i>Proceed to Checkout
+                            </a>
+                            <a href="{% url 'product_list' %}" class="btn btn-outline-primary">
+                                <i class="bi bi-arrow-left me-2"></i>Continue Shopping
+                            </a>
+                        </div>
+
+                        <div class="mt-4">
+                            <h6 class="fw-bold mb-3">
+                                <i class="bi bi-shield-check me-2"></i>Secure Checkout
+                            </h6>
+                            <div class="d-flex gap-2 mb-3">
+                                <i class="bi bi-lock-fill text-success"></i>
+                                <small class="text-muted">SSL encrypted checkout</small>
+                            </div>
+                            <div class="d-flex gap-2 mb-3">
+                                <i class="bi bi-shield-check text-success"></i>
+                                <small class="text-muted">30-day return policy</small>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <i class="bi bi-truck text-success"></i>
+                                <small class="text-muted">Fast & reliable shipping</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recommended Products -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3 class="fw-bold" data-aos="fade-up">
+                    <i class="bi bi-lightbulb me-2"></i>You Might Also Like
+                </h3>
+                <p class="text-muted" data-aos="fade-up" data-aos-delay="100">
+                    Complete your purchase with these recommended items
+                </p>
+            </div>
         </div>
         
-        <div class="d-flex justify-content-between mt-4">
-            <a href="{% url 'product_list' %}" class="btn btn-secondary">Continue Shopping</a>
-            <a href="{% url 'checkout' %}" class="btn btn-primary">Proceed to Checkout</a>
+        <div class="row g-4">
+            <!-- Placeholder for recommended products -->
+            <div class="col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="card h-100 product-card">
+                    <div class="position-relative">
+                        <img src="https://via.placeholder.com/300x200/2563eb/ffffff?text=Product" 
+                             class="card-img-top" alt="Recommended Product" style="height: 200px; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 p-3" 
+                             style="background: linear-gradient(transparent, rgba(0,0,0,0.7));">
+                            <span class="badge bg-primary fs-6 fw-bold">$199</span>
+                        </div>
+                    </div>
+                    <div class="card-body d-flex flex-column p-3">
+                        <h6 class="card-title fw-bold mb-2">Recommended Product</h6>
+                        <p class="card-text text-muted flex-grow-1 mb-3">
+                            High-quality product that complements your cart.
+                        </p>
+                        <div class="d-grid gap-2">
+                            <a href="#" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-eye me-2"></i>View Details
+                            </a>
+                            <button class="btn btn-primary btn-sm">
+                                <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    {% else %}
-        <div class="text-center py-5">
-            <h3>Your cart is empty</h3>
-            <p class="text-muted">Add some products to your cart to get started!</p>
-            <a href="{% url 'product_list' %}" class="btn btn-primary">Browse Products</a>
+    </div>
+</section>
+
+{% else %}
+<!-- Empty Cart Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center" data-aos="fade-up">
+                <div class="mb-4">
+                    <i class="bi bi-cart-x display-1 text-muted"></i>
+                </div>
+                <h2 class="fw-bold mb-3">Your Cart is Empty</h2>
+                <p class="text-muted mb-4">
+                    Looks like you haven't added any products to your cart yet. 
+                    Start shopping to discover amazing products!
+                </p>
+                <div class="d-grid gap-3 d-md-flex justify-content-md-center">
+                    <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-grid me-2"></i>Browse Products
+                    </a>
+                    <a href="#" class="btn btn-outline-primary btn-lg">
+                        <i class="bi bi-heart me-2"></i>View Wishlist
+                    </a>
+                </div>
+            </div>
         </div>
-    {% endif %}
-</div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h3 class="fw-bold mb-3" data-aos="fade-up">Why Shop with TechStore?</h3>
+                <p class="text-muted lead" data-aos="fade-up" data-aos-delay="100">
+                    We're committed to providing the best shopping experience
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card border-0 bg-white shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="bi bi-truck display-4 text-primary"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Fast & Free Shipping</h5>
+                        <p class="text-muted">Free shipping on orders over $50. Quick delivery to your doorstep.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="card border-0 bg-white shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="bi bi-shield-check display-4 text-primary"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Secure Shopping</h5>
+                        <p class="text-muted">SSL encrypted checkout and secure payment processing for your safety.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
+                <div class="card border-0 bg-white shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="bi bi-arrow-return-left display-4 text-primary"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Easy Returns</h5>
+                        <p class="text-muted">30-day return policy. No questions asked for hassle-free returns.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<style>
+.cart-item {
+    transition: all 0.3s ease;
+}
+
+.cart-item:hover {
+    background-color: rgba(37, 99, 235, 0.02);
+}
+
+.summary-item {
+    padding: 0.5rem 0;
+}
+
+.sticky-top {
+    z-index: 1020;
+}
+
+.product-card {
+    transition: all 0.3s ease;
+    border: none;
+    overflow: hidden;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .sticky-top {
+        position: relative !important;
+        top: 0 !important;
+    }
+}
+</style>
 {% endblock %} 

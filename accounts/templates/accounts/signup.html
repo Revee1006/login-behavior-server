@@ -1,41 +1,399 @@
 {% extends 'base.html' %}
+{% block title %}Sign Up - TechStore{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="text-center">Sign Up</h3>
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6" data-aos="fade-right">
+                <h1 class="display-4 fw-bold mb-4">Join TechStore!</h1>
+                <p class="lead mb-4">Create your account to unlock exclusive benefits, track orders, and get personalized recommendations.</p>
+                <div class="d-flex gap-3">
+                    <a href="{% url 'login' %}" class="btn btn-light btn-lg">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                    </a>
+                    <a href="{% url 'product_list' %}" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-grid me-2"></i>Browse Products
+                    </a>
                 </div>
-                <div class="card-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        {% for field in form %}
-                        <div class="mb-3">
-                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                            {{ field.as_widget|safe }}
-                            {% if field.errors %}
-                            <div class="text-danger">
-                                {% for error in field.errors %}
-                                <small>{{ error }}</small>
-                                {% endfor %}
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="text-center">
+                    <i class="bi bi-person-plus display-1 text-white opacity-75"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Signup Form Section -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="card border-0 shadow-lg" data-aos="fade-up">
+                    <div class="card-header bg-primary text-white text-center border-0 py-4">
+                        <h3 class="fw-bold mb-0">
+                            <i class="bi bi-person-plus me-2"></i>Create Account
+                        </h3>
+                        <p class="mb-0 mt-2 opacity-75">Join the TechStore community</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            
+                            {% for field in form %}
+                            <div class="mb-4">
+                                <label for="{{ field.id_for_label }}" class="form-label fw-bold">
+                                    {% if field.name == 'username' %}
+                                        <i class="bi bi-person me-2"></i>Username
+                                    {% elif field.name == 'email' %}
+                                        <i class="bi bi-envelope me-2"></i>Email Address
+                                    {% elif field.name == 'password1' %}
+                                        <i class="bi bi-lock me-2"></i>Password
+                                    {% elif field.name == 'password2' %}
+                                        <i class="bi bi-shield-lock me-2"></i>Confirm Password
+                                    {% else %}
+                                        {{ field.label }}
+                                    {% endif %}
+                                </label>
+                                
+                                <div class="input-group">
+                                    {% if field.name == 'username' %}
+                                        <span class="input-group-text bg-light border-end-0">
+                                            <i class="bi bi-person text-muted"></i>
+                                        </span>
+                                    {% elif field.name == 'email' %}
+                                        <span class="input-group-text bg-light border-end-0">
+                                            <i class="bi bi-envelope text-muted"></i>
+                                        </span>
+                                    {% elif field.name == 'password1' %}
+                                        <span class="input-group-text bg-light border-end-0">
+                                            <i class="bi bi-lock text-muted"></i>
+                                        </span>
+                                    {% elif field.name == 'password2' %}
+                                        <span class="input-group-text bg-light border-end-0">
+                                            <i class="bi bi-shield-lock text-muted"></i>
+                                        </span>
+                                    {% endif %}
+                                    
+                                    {{ field.as_widget|safe }}
+                                    
+                                    {% if 'password' in field.name %}
+                                        <button class="btn btn-outline-secondary border-start-0" type="button" 
+                                                onclick="togglePassword(this)">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    {% endif %}
+                                </div>
+                                
+                                {% if field.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in field.errors %}
+                                    <small class="text-danger">
+                                        <i class="bi bi-exclamation-circle me-1"></i>{{ error }}
+                                    </small>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                
+                                {% if field.help_text %}
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle me-1"></i>{{ field.help_text }}
+                                </div>
+                                {% endif %}
                             </div>
-                            {% endif %}
-                            {% if field.help_text %}
-                            <div class="form-text">{{ field.help_text }}</div>
-                            {% endif %}
+                            {% endfor %}
+                            
+                            <div class="mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                                    <label class="form-check-label text-muted" for="termsCheck">
+                                        I agree to the 
+                                        <a href="#" class="text-decoration-none">Terms of Service</a> 
+                                        and 
+                                        <a href="#" class="text-decoration-none">Privacy Policy</a>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="newsletterCheck">
+                                    <label class="form-check-label text-muted" for="newsletterCheck">
+                                        Subscribe to our newsletter for exclusive offers and updates
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-person-plus me-2"></i>Create Account
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div class="text-center mt-4">
+                            <p class="text-muted mb-3">Or sign up with</p>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-secondary">
+                                    <i class="bi bi-google me-2"></i>Continue with Google
+                                </button>
+                                <button class="btn btn-outline-secondary">
+                                    <i class="bi bi-facebook me-2"></i>Continue with Facebook
+                                </button>
+                            </div>
                         </div>
-                        {% endfor %}
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Sign Up</button>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="text-center">
+                            <p class="text-muted mb-0">
+                                Already have an account? 
+                                <a href="{% url 'login' %}" class="text-decoration-none fw-bold">
+                                    Sign in here
+                                </a>
+                            </p>
                         </div>
-                    </form>
-                    <div class="text-center mt-3">
-                        <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
+
+<!-- Benefits Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h3 class="fw-bold mb-3" data-aos="fade-up">Member Benefits</h3>
+                <p class="text-muted lead" data-aos="fade-up" data-aos-delay="100">
+                    Unlock exclusive features and rewards
+                </p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="card border-0 bg-white shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="bi bi-gift display-4 text-primary"></i>
+                        </div>
+                        <h6 class="fw-bold mb-3">Welcome Bonus</h6>
+                        <p class="text-muted small">Get 10% off your first order when you sign up!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="card border-0 bg-white shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="bi bi-truck display-4 text-primary"></i>
+                        </div>
+                        <h6 class="fw-bold mb-3">Free Shipping</h6>
+                        <p class="text-muted small">Free shipping on orders over $50 for all members.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
+                <div class="card border-0 bg-white shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="bi bi-star display-4 text-primary"></i>
+                        </div>
+                        <h6 class="fw-bold mb-3">Rewards Program</h6>
+                        <p class="text-muted small">Earn points on every purchase and redeem for discounts.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="500">
+                <div class="card border-0 bg-white shadow-sm h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="bi bi-bell display-4 text-primary"></i>
+                        </div>
+                        <h6 class="fw-bold mb-3">Early Access</h6>
+                        <p class="text-muted small">Get early access to sales and new product launches.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Security Section -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-5">
+                        <div class="mb-4">
+                            <i class="bi bi-shield-check display-1 text-primary"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Your Security is Our Priority</h4>
+                        <p class="text-muted mb-4">
+                            We use industry-standard encryption to protect your personal information. 
+                            Your data is safe with us.
+                        </p>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-lock-fill text-success me-2"></i>
+                                    <small class="text-muted">SSL Encrypted</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-shield-check text-success me-2"></i>
+                                    <small class="text-muted">Secure Payments</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-eye-slash text-success me-2"></i>
+                                    <small class="text-muted">Privacy Protected</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.hero-section {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.1;
+}
+
+.hero-section .container {
+    position: relative;
+    z-index: 1;
+}
+
+.form-control {
+    border-left: none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.input-group-text {
+    border-right: none;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+}
+
+.btn-outline-secondary {
+    border-left: none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 2rem 0;
+    }
+    
+    .display-4 {
+        font-size: 2rem;
+    }
+}
+</style>
+
+<script>
+// Password toggle functionality
+function togglePassword(button) {
+    const input = button.parentElement.querySelector('input');
+    const icon = button.querySelector('i');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Form validation
+    const form = document.querySelector('.needs-validation');
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        });
+    }
+    
+    // Auto-focus on username field
+    const usernameField = document.querySelector('input[name="username"]');
+    if (usernameField) {
+        usernameField.focus();
+    }
+    
+    // Password strength indicator
+    const passwordField = document.querySelector('input[name="password1"]');
+    if (passwordField) {
+        passwordField.addEventListener('input', function() {
+            const password = this.value;
+            const strength = calculatePasswordStrength(password);
+            updatePasswordStrengthIndicator(strength);
+        });
+    }
+});
+
+function calculatePasswordStrength(password) {
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+    return strength;
+}
+
+function updatePasswordStrengthIndicator(strength) {
+    const strengthText = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
+    const strengthColor = ['danger', 'warning', 'warning', 'info', 'success'];
+    
+    // You can add a strength indicator element to show this
+    console.log(`Password strength: ${strengthText[strength-1]} (${strength}/5)`);
+}
+</script>
 {% endblock %} 
