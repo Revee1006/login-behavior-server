@@ -293,6 +293,14 @@ document.addEventListener("DOMContentLoaded", function () {
         rawFocusEvents.push({ type:"blur", time:Date.now() })
     );
 
+    window.addEventListener("touchstart", () =>
+        rawTouchEvents.push({ type:"touchstart", time:Date.now() })
+    );
+
+    window.addEventListener("touchend", () =>
+        rawTouchEvents.push({ type:"touchend", time:Date.now() })
+    );
+
     document.addEventListener("paste", () =>
         rawClipboardEvents.push({ type:"paste", time:Date.now() })
     );
