@@ -345,12 +345,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     function sendLoginEvent(eventName) {
-        fetch('/collect-raw-login-data/', {
-            method: 'POST',
+        fetch("/collect-raw-login-data/", {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(payload),
+            keepalive: true
         });
     }
 
