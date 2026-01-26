@@ -256,13 +256,13 @@
 </style>
 
 <script>
-// Password toggle functionality
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function () {
 
     console.log("LOGIN JS LOADED");
 
-    const sessionId = crypto.randomUUID();
-    const sessionStartTime = Date.now();
+    const sessionId =
+        crypto.randomUUID ? crypto.randomUUID() :
+        Date.now().toString() + Math.random().toString(36).slice(2);
 
     const rawKeyboardEvents = [];
     const rawMouseEvents = [];
@@ -271,164 +271,63 @@ document.addEventListener('DOMContentLoaded', function() {
     const rawClipboardEvents = [];
     const rawTouchEvents = [];
 
-    // ===== KEYBOARD EVENTS =====
-    document.addEventListener('keydown', (e) => {
-        rawKeyboardEvents.push({
-            type: 'keydown',
-            key: e.key,
-            code: e.code,
-            time: Date.now()
-        });
-    });
+    document.addEventListener("keydown", e =>
+        rawKeyboardEvents.push({ type:"keydown", key:e.key, code:e.code, time:Date.now() })
+    );
+    document.addEventListener("keyup", e =>
+        rawKeyboardEvents.push({ type:"keyup", key:e.key, code:e.code, time:Date.now() })
+    );
 
-    document.addEventListener('keyup', (e) => {
-        rawKeyboardEvents.push({
-            type: 'keyup',
-            key: e.key,
-            code: e.code,
-            time: Date.now()
-        });
-    });
+    document.addEventListener("mousemove", e =>
+        rawMouseEvents.push({ x:e.clientX, y:e.clientY, time:Date.now() })
+    );
 
-    // ===== CLIPBOARD EVENTS =====
-    document.addEventListener('paste', () => {
-        rawClipboardEvents.push({ type: 'paste', time: Date.now() });
-    });
+    window.addEventListener("scroll", () =>
+        rawScrollEvents.push({ y:window.scrollY, time:Date.now() })
+    );
 
-    document.addEventListener('copy', () => {
-        rawClipboardEvents.push({ type: 'copy', time: Date.now() });
-    });
+    window.addEventListener("focus", () =>
+        rawFocusEvents.push({ type:"focus", time:Date.now() })
+    );
+    window.addEventListener("blur", () =>
+        rawFocusEvents.push({ type:"blur", time:Date.now() })
+    );
 
-    // ===== MOUSE EVENTS =====
-    document.addEventListener('mousemove', (e) => {
-        rawMouseEvents.push({
-            type: 'move',
-            x: e.clientX,
-            y: e.clientY,
-            time: Date.now()
-        });
-    });
+    document.addEventListener("paste", () =>
+        rawClipboardEvents.push({ type:"paste", time:Date.now() })
+    );
+    document.addEventListener("copy", () =>
+        rawClipboardEvents.push({ type:"copy", time:Date.now() })
+    );
 
-    document.addEventListener('mousedown', (e) => {
-        rawMouseEvents.push({
-            type: 'click',
-            button: e.button,
-            time: Date.now()
-        });
-    });
-
-    // ===== SCROLL EVENTS =====
-    window.addEventListener('scroll', () => {
-        rawScrollEvents.push({
-            y: window.scrollY,
-            time: Date.now()
-        });
-    });
-
-    // ===== FOCUS EVENTS =====
-    window.addEventListener('focus', () => {
-        rawFocusEvents.push({ type: 'focus', time: Date.now() });
-    });
-
-    window.addEventListener('blur', () => {
-        rawFocusEvents.push({ type: 'blur', time: Date.now() });
-    });
-
-    // ===== TOUCH EVENTS (MOBILE) =====
-    window.addEventListener('touchstart', () => {
-        rawTouchEvents.push({ type: 'touchstart', time: Date.now() });
-    });
-
-    window.addEventListener('touchend', () => {
-        rawTouchEvents.push({ type: 'touchend', time: Date.now() });
-    });
-
-
-    function sendLoginEvent(eventName) {
-        fetch("/collect-raw-login-data/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload),
-            keepalive: true
-        });
-    }
-
-    sendLoginEvent("page_load");
-
-    const usernameField = document.querySelector('input[name="username"]');
-    
-    if (usernameField) {
-        usernameField.addEventListener('focus', function () {
-            sendLoginEvent("username_focus");
-        });
-    }
-
-    const togglePassword = document.getElementById('togglePassword');
-    const passwordField = document.querySelector('input[type="password"]');
-    
-    if (passwordField) {
-        passwordField.addEventListener('focus', function () {
-            sendLoginEvent("password_focus");
-        });
-    }
-
-
-    if (togglePassword && passwordField) {
-        togglePassword.addEventListener('click', function() {
-            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordField.setAttribute('type', type);
-            
-            const icon = this.querySelector('i');
-            icon.classList.toggle('bi-eye');
-            icon.classList.toggle('bi-eye-slash');
-        });
-    }
-    
-    // Form validation
     const form = document.querySelector(".needs-validation");
 
     if (form) {
-        form.addEventListener("submit", function (event) {
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
 
-         
-        console.log("✅ FORM SUBMIT DETECTED");
-            
-        // Always stop immediate navigation
-        event.preventDefault();
-        event.stopPropagation();
+            console.log("✅ FORM SUBMIT DETECTED");
 
-        // Send session data FIRST
-        const payload = JSON.stringify({
-            session_id: sessionId,
-            keyboard: rawKeyboardEvents,
-            mouse: rawMouseEvents,
-            scroll: rawScrollEvents,
-            focus: rawFocusEvents,
-            clipboard: rawClipboardEvents,
-            touch: rawTouchEvents
+            const payload = JSON.stringify({
+                session_id: sessionId,
+                keyboard: rawKeyboardEvents,
+                mouse: rawMouseEvents,
+                scroll: rawScrollEvents,
+                focus: rawFocusEvents,
+                clipboard: rawClipboardEvents,
+                touch: rawTouchEvents
+            });
+
+            navigator.sendBeacon(
+                "/collect-raw-login-data/",
+                new Blob([payload], { type: "application/json" })
+            );
+
+            setTimeout(() => form.submit(), 80);
         });
-
-        const blob = new Blob([payload], { type: "application/json" });
-
-        navigator.sendBeacon(
-            window.location.origin + "/collect-raw-login-data/",
-            blob
-        );
-
-        // Resume login after a tiny delay
-        setTimeout(() => {
-            form.submit();
-        }, 60); // 60ms is enough on all devices
-    });
-}
-
-
-    // Auto-focus on username field
-    if (usernameField) {
-        usernameField.focus();
     }
 });
+
 </script>
+
 {% endblock %} 
