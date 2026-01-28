@@ -204,7 +204,6 @@ def collect_raw_login_data(request):
 
         js_event_rate=row["js_event_rate"],
     )
-
     
     return JsonResponse({"status": "saved"})
 
