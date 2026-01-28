@@ -15,7 +15,7 @@ import os
 from datetime import datetime
 
 from .models import LoginEvent
-
+from .models import LoginBehavior
 
 # =========================
 # CSV SCHEMA (FROZEN)
@@ -176,6 +176,12 @@ def collect_raw_login_data(request):
 
     print("CSV ROW SAVED:", row["session_id"])
 
+    LoginBehavior.objects.create(
+        session_id=row["session_id"],
+        user_agent=row["user_agent"],
+        payload=payload,          # full raw data (keyboard, mouse, etc.)
+    )
+    
     return JsonResponse({"status": "saved"})
 
 
