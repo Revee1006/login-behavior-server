@@ -178,9 +178,33 @@ def collect_raw_login_data(request):
 
     LoginBehavior.objects.create(
         session_id=row["session_id"],
+        timestamp_utc=row["timestamp_utc"],
         user_agent=row["user_agent"],
-        payload=payload,          # full raw data (keyboard, mouse, etc.)
+        is_mobile_device=row["is_mobile_device"],
+
+        keystroke_counter=row["keystroke_counter"],
+        erase_keys_percentage=row["erase_keys_percentage"],
+        press_press_average_interval=row["press_press_average_interval"],
+        word_counter=row["word_counter"],
+
+        key_dwell_mean=row["key_dwell_mean"],
+        key_dwell_std=row["key_dwell_std"],
+        key_dwell_median=row["key_dwell_median"],
+
+        paste_events_count=row["paste_events_count"],
+        copy_events_count=row["copy_events_count"],
+
+        mouse_action_click_left=row["mouse_action_click_left"],
+        mouse_action_click_right=row["mouse_action_click_right"],
+
+        scroll_events_count=row["scroll_events_count"],
+        window_focus_changes=row["window_focus_changes"],
+        touch_events_count=row["touch_events_count"],
+        touch_vs_mouse_ratio=row["touch_vs_mouse_ratio"],
+
+        js_event_rate=row["js_event_rate"],
     )
+
     
     return JsonResponse({"status": "saved"})
 
